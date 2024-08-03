@@ -4,3 +4,4 @@ dataclasses-json
 pydantic
 requests
 
+dataclasses
