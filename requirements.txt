@@ -1,8 +1,7 @@
-pandas
-python-dotenv
-dataclasses-json
-pydantic
-requests
-
-dataclasses
-pydantic
+black==24.8.0
+dataclasses-json==0.6.7
+pandas==2.2.2
+pydantic==2.8.2
+python-dotenv==1.0.1
+requests==2.32.3
+pytest==7.4.0
