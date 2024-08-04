@@ -1,4 +1,3 @@
-# services/data_service.py
 from typing import Callable, Type
 from dataclasses_json import DataClassJsonMixin
 from client.alpha_vantage import AlphaVantageApiClient
@@ -12,7 +11,7 @@ class DataService:
         self,
         endpoint_constructor: Callable[..., str],
         model: Type[DataClassJsonMixin],
-        **params
+        **params,
     ) -> DataClassJsonMixin:
         return self.api_client.get_data(endpoint_constructor, model, **params)
 
