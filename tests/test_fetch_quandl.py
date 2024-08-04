@@ -2,7 +2,6 @@ from typing import Generator
 import pytest
 from io import StringIO
 from unittest.mock import MagicMock, patch
-from config.config import QUANDL_API_KEY
 from data_ingestion import fetch_quandl_data
 
 
@@ -16,6 +15,11 @@ def mock_get(monkeypatch: pytest.MonkeyPatch) -> Generator[MagicMock, None, None
 def mock_read_csv(monkeypatch: pytest.MonkeyPatch) -> Generator[MagicMock, None, None]:
     with patch("pandas.read_csv") as mock_read_csv:
         yield mock_read_csv
+
+
+@pytest.fixture
+def mock_quandl_api_key(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("config.config.QUANDL_API_KEY", "mock_api_key")
 
 
 def test_fetch_quandl_data(mock_read_csv: MagicMock, mock_get: MagicMock) -> None:
@@ -37,7 +41,7 @@ def test_fetch_quandl_data(mock_read_csv: MagicMock, mock_get: MagicMock) -> Non
         params={
             "start_date": "2020-01-01",
             "end_date": "2020-01-02",
-            "api_key": QUANDL_API_KEY,
+            "api_key": "mock_api_key",
         },
     )
     actual_call_arg = mock_read_csv.call_args[0][0]
