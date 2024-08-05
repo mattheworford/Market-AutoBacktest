@@ -2,14 +2,21 @@ import pytest
 from unittest.mock import patch, Mock
 from services.alpha_vantage_services import AlphaVantanageDataService
 from client.alpha_vantage import AlphaVantageApiClient
-from models.alpha_vantage_models.alpha_vantage_daily import AlphaVantageResponse, MetaData
+from models.alpha_vantage_models.alpha_vantage_daily import (
+    AlphaVantageResponse,
+    MetaData,
+)
 import json
 from typing import Generator
 
+
 @pytest.fixture
 def mock_api_client() -> Generator[Mock, None, None]:
-    with patch("services.alpha_vantage_services.AlphaVantageApiClient") as MockApiClient:
+    with patch(
+        "services.alpha_vantage_services.AlphaVantageApiClient"
+    ) as MockApiClient:
         yield MockApiClient
+
 
 def test_fetch_and_transform_data(mock_api_client: Mock) -> None:
     # Mock client response
@@ -20,9 +27,9 @@ def test_fetch_and_transform_data(mock_api_client: Mock) -> None:
             symbol="IBM",
             last_refreshed="2024-08-02",
             output_size="Compact",
-            time_zone="US/Eastern"
+            time_zone="US/Eastern",
         ),
-        time_series_daily={}
+        time_series_daily={},
     )
 
     service = AlphaVantanageDataService(api_client=mock_client)
@@ -36,6 +43,7 @@ def test_fetch_and_transform_data(mock_api_client: Mock) -> None:
     # Perform the assertion on the result object
     assert result.meta_data.symbol == "IBM"
 
+
 def test_get_json_response(mock_api_client: Mock) -> None:
     # Mock AlphaVantageResponse object
     mock_data = AlphaVantageResponse(
@@ -44,9 +52,9 @@ def test_get_json_response(mock_api_client: Mock) -> None:
             symbol="IBM",
             last_refreshed="2024-08-02",
             output_size="Compact",
-            time_zone="US/Eastern"
+            time_zone="US/Eastern",
         ),
-        time_series_daily={}
+        time_series_daily={},
     )
 
     service = AlphaVantanageDataService(api_client=mock_api_client.return_value)

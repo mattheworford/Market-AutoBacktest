@@ -4,6 +4,7 @@ from client.alpha_vantage import AlphaVantageApiClient
 
 T = TypeVar("T", bound=DataClassJsonMixin)
 
+
 class AlphaVantanageDataService:
     def __init__(self, api_client: AlphaVantageApiClient):
         self.api_client = api_client

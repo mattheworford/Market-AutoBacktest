@@ -4,6 +4,7 @@ from dataclasses_json import DataClassJsonMixin
 
 T = TypeVar("T", bound=DataClassJsonMixin)
 
+
 class AlphaVantageApiClient:
     def __init__(self, key: str, base_url: str) -> None:
         self.base_url = base_url

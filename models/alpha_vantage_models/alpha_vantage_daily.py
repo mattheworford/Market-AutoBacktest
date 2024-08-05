@@ -2,6 +2,7 @@ from typing import Dict
 from dataclasses import dataclass, field
 from dataclasses_json import DataClassJsonMixin, config, dataclass_json
 
+
 @dataclass_json
 @dataclass
 class MetaData(DataClassJsonMixin):
@@ -11,6 +12,7 @@ class MetaData(DataClassJsonMixin):
     output_size: str = field(metadata=config(field_name="4. Output Size"))
     time_zone: str = field(metadata=config(field_name="5. Time Zone"))
 
+
 @dataclass_json
 @dataclass
 class TimeSeriesDaily(DataClassJsonMixin):
@@ -19,6 +21,7 @@ class TimeSeriesDaily(DataClassJsonMixin):
     low: str = field(metadata=config(field_name="3. low"))
     close: str = field(metadata=config(field_name="4. close"))
     volume: str = field(metadata=config(field_name="5. volume"))
+
 
 @dataclass_json
 @dataclass

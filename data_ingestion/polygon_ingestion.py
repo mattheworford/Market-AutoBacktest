@@ -25,7 +25,7 @@ from typing import Callable
 
 
 def main() -> None:
-    assert POLY_API_KEY is not None #Type assertion for mypy
+    assert POLY_API_KEY is not None  # Type assertion for mypy
     try:
         # Instantiate all classes
         daily_client = PolygonApiClient(key=POLY_API_KEY, base_url=POLY_BASE_URL)
