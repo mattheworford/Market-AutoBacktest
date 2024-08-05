@@ -1,10 +1,8 @@
-# client/alpha_vantage.py
 import requests
-from typing import Dict, Type, TypeVar, Callable
+from typing import Dict, Type, TypeVar, Callable, Any
 from dataclasses_json import DataClassJsonMixin
 
 T = TypeVar("T", bound=DataClassJsonMixin)
-
 
 class AlphaVantageApiClient:
     def __init__(self, key: str, base_url: str) -> None:
@@ -19,7 +17,7 @@ class AlphaVantageApiClient:
         return headers
 
     def get_data(
-        self, endpoint_constructor: Callable[..., str], model: Type[T], **params
+        self, endpoint_constructor: Callable[..., str], model: Type[T], **params: Any
     ) -> T:
         endpoint = endpoint_constructor(**params)
         response = requests.get(f"{self.base_url}{endpoint}")

@@ -3,15 +3,16 @@ from unittest.mock import patch, Mock
 import json
 from client.alpha_vantage import AlphaVantageApiClient
 from models.alpha_vantage_models.alpha_vantage_daily import AlphaVantageResponse
+from typing import Generator
 
 
 @pytest.fixture
-def mock_get():
+def mock_get() -> Generator[Mock, None, None]:
     with patch("client.alpha_vantage.requests.get") as mock_get:
         yield mock_get
 
 
-def test_get_data(mock_get):
+def test_get_data(mock_get: Mock) -> None:
     # Mock response data
     mock_response = Mock()
     expected_data = {

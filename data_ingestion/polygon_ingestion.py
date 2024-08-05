@@ -21,9 +21,11 @@ from services.polygon_services import PolygonDataService
 from utils.api_constructor_utils import PolygonApiConstructor
 from models.polygon_models.polygon_previous_close import PolygonDailyApiResponse
 from models.polygon_models.polygon_aggregate_bars import PolygonAggregatesResponse
+from typing import Callable
 
 
-def main():
+def main() -> None:
+    assert POLY_API_KEY is not None #Type assertion for mypy
     try:
         # Instantiate all classes
         daily_client = PolygonApiClient(key=POLY_API_KEY, base_url=POLY_BASE_URL)
@@ -31,7 +33,7 @@ def main():
         poly_api_constructor = PolygonApiConstructor(base_url=POLY_BASE_URL)
 
         # Use the daily endpoint
-        poly_endpoint_constructor = (
+        poly_endpoint_constructor: Callable[[str, str], str] = (
             poly_api_constructor.construct_previous_close_endpoint
         )
         poly_data = poly_data_service.fetch_data_with_endpoint(
@@ -43,11 +45,11 @@ def main():
         print(poly_data.to_json(indent=4))
 
         # Use aggregate endpoint
-        poly_endpoint_constructor = (
+        poly_endpoint_constructor_agg: Callable[[str, str, int, str, str, str], str] = (
             poly_api_constructor.construct_aggregate_bars_endpoint
         )
         poly_data = poly_data_service.fetch_data_with_endpoint(
-            poly_endpoint_constructor,
+            poly_endpoint_constructor_agg,
             PolygonAggregatesResponse,
             api_key=POLY_API_KEY,
             symbol=POLY_SYMBOL,

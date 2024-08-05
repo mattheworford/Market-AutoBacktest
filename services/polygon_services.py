@@ -1,4 +1,4 @@
-from typing import Callable, Type
+from typing import Callable, Type, Any
 from dataclasses_json import DataClassJsonMixin
 from client.polygon import PolygonApiClient
 
@@ -11,7 +11,7 @@ class PolygonDataService:
         self,
         endpoint_constructor: Callable[..., str],
         model: Type[DataClassJsonMixin],
-        **params,
+        **params: Any,
     ) -> DataClassJsonMixin:
         return self.api_client.get_data(endpoint_constructor, model, **params)
 

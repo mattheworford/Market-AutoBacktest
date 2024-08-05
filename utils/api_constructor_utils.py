@@ -2,12 +2,11 @@ import re
 
 
 class AlphaVantageApiConstructor:
-    def __init__(self, base_url: str):
+    def __init__(self, base_url: str) -> None:
         self.base_url = base_url
 
     def construct_time_series_daily_endpoint(self, symbol: str, api_key: str) -> str:
         return f"?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}"
-
 
 class PolygonApiConstructor:
     def __init__(self, base_url: str) -> None:

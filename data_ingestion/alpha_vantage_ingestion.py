@@ -13,7 +13,8 @@ from utils.api_constructor_utils import AlphaVantageApiConstructor
 from models.alpha_vantage_models.alpha_vantage_daily import AlphaVantageResponse
 
 
-def main():
+def main() -> None:
+    assert API_KEY is not None  # Type assertion for mypy
     try:
         client = AlphaVantageApiClient(key=API_KEY, base_url=BASE_URL)
         data_service = AlphaVantanageDataService(api_client=client)
