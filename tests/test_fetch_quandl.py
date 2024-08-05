@@ -23,7 +23,7 @@ def mock_read_csv(monkeypatch: pytest.MonkeyPatch) -> Generator[MagicMock, None,
 def test_fetch_quandl_data(mock_read_csv: MagicMock, mock_get: MagicMock) -> None:
     load_dotenv(verbose=False)
     QUANDL_API_KEY = os.getenv("QUANDL_API_KEY")
-    
+
     mock_response = mock_get.return_value
     mock_response.text = "Date,Open,High,Low,Close,Volume,Ex-Dividend,Split Ratio,Adj. Open,Adj. High,Adj. Low,Adj. Close,Adj. Volume\n2020-01-01,100.0,105.0,95.0,102.0,1000000,0.0,1.0,100.0,105.0,95.0,102.0,1000000\n"
     mock_csv_data = StringIO(mock_response.text)
