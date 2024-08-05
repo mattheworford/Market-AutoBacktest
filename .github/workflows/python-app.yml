@@ -34,6 +34,10 @@ jobs:
     - name: Type check with mypy
       run: |
         python -m mypy . --strict
+    - name: Set environment variables
+      env:
+        QUANDL_API_KEY: "mock_api_key"
+      run: echo "Environment variables set"
     - name: Test with pytest
       run: |
         python -m pytest -s tests
