@@ -3,12 +3,17 @@ from unittest.mock import MagicMock, patch, Mock
 from client.alpha_vantage import AlphaVantageApiClient
 from services.alpha_vantage_services import AlphaVantanageDataService
 from utils.api_constructor_utils import AlphaVantageApiConstructor
-from models.alpha_vantage_models.alpha_vantage_daily import AlphaVantageResponse, MetaData, TimeSeriesDaily
+from models.alpha_vantage_models.alpha_vantage_daily import (
+    AlphaVantageResponse,
+    MetaData,
+    TimeSeriesDaily,
+)
 from data_ingestion.fetch_alpha_vantage import fetch_av_timeseries_daily_data
 from typing import Any
 import json
 
-@patch.dict('os.environ', {'API_KEY': 'fake_api_key'})
+
+@patch.dict("os.environ", {"API_KEY": "fake_api_key"})
 @patch("client.alpha_vantage.AlphaVantageApiClient.get_data")
 @patch("data_ingestion.fetch_alpha_vantage.AlphaVantageApiClient")
 @patch("data_ingestion.fetch_alpha_vantage.AlphaVantanageDataService")
