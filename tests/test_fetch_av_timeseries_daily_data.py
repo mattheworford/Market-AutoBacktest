@@ -3,16 +3,12 @@ from unittest.mock import MagicMock, patch, Mock
 from client.alpha_vantage import AlphaVantageApiClient
 from services.alpha_vantage_services import AlphaVantanageDataService
 from utils.api_constructor_utils import AlphaVantageApiConstructor
-from models.alpha_vantage_models.alpha_vantage_daily import (
-    AlphaVantageResponse,
-    MetaData,
-    TimeSeriesDaily,
-)
+from models.alpha_vantage_models.alpha_vantage_daily import AlphaVantageResponse, MetaData, TimeSeriesDaily
 from data_ingestion.fetch_alpha_vantage import fetch_av_timeseries_daily_data
 from typing import Any
 import json
 
-
+@patch.dict('os.environ', {'API_KEY': 'fake_api_key'})
 @patch("client.alpha_vantage.AlphaVantageApiClient.get_data")
 @patch("data_ingestion.fetch_alpha_vantage.AlphaVantageApiClient")
 @patch("data_ingestion.fetch_alpha_vantage.AlphaVantanageDataService")
@@ -57,24 +53,4 @@ def test_fetch_av_timeseries_daily_data(
     )
 
     result = fetch_av_timeseries_daily_data()
-
-    expected_response = AlphaVantageResponse(
-        meta_data=MetaData(
-            information="Daily Prices (open, high, low, close) and Volumes",
-            symbol="IBM",
-            last_refreshed="2024-08-02",
-            output_size="Compact",
-            time_zone="US/Eastern",
-        ),
-        time_series_daily={
-            "2024-08-02": TimeSeriesDaily(
-                open="188.7800",
-                high="189.2600",
-                low="185.7000",
-                close="189.1200",
-                volume="4548824",
-            )
-        },
-    )
-
-    assert json.loads(result) == json.loads(expected_response.to_json(indent=4))
+    assert json.loads(result) == expected_data

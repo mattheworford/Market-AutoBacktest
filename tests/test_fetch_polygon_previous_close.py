@@ -11,6 +11,7 @@ from data_ingestion.fetch_polygon import fetch_polygon_previous_close
 from typing import Any
 
 
+@patch.dict('os.environ', {'POLY_API_KEY': 'fake_poly_api_key'})
 @patch("client.polygon.PolygonApiClient.get_data")
 @patch("data_ingestion.fetch_polygon.PolygonApiClient")
 @patch("data_ingestion.fetch_polygon.PolygonDataService")
