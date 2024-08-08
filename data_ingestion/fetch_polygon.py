@@ -41,9 +41,6 @@ def fetch_polygon_previous_close() -> PolygonDailyApiResponse:
     return data
 
 
-print(fetch_polygon_previous_close().to_json(indent=4))
-
-
 def fetch_polygon_agg_bars() -> PolygonAggregatesResponse:
     if POLY_API_KEY is None:
         raise ValueError("POLY_API_KEY cannot be None")
@@ -66,6 +63,3 @@ def fetch_polygon_agg_bars() -> PolygonAggregatesResponse:
         to=POLY_TO,
     )
     return data
-
-
-print(fetch_polygon_agg_bars().to_json(indent=4))

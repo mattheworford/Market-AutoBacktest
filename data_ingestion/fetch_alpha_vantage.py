@@ -29,4 +29,4 @@ def fetch_av_timeseries_daily_data() -> str:
     return data_service.get_json_response(data)
 
 
-print(fetch_av_timeseries_daily_data())
+
