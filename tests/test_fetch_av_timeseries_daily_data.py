@@ -3,20 +3,22 @@ from unittest.mock import MagicMock, patch, Mock
 from client.alpha_vantage import AlphaVantageApiClient
 from services.alpha_vantage_services import AlphaVantanageDataService
 from utils.api_constructor_utils import AlphaVantageApiConstructor
-from models.alpha_vantage_models.alpha_vantage_daily import AlphaVantageResponse, MetaData, TimeSeriesDaily
+from models.alpha_vantage_models.alpha_vantage_daily import (
+    AlphaVantageResponse,
+    MetaData,
+    TimeSeriesDaily,
+)
 from data_ingestion.fetch_alpha_vantage import fetch_av_timeseries_daily_data
 from typing import Any
 import json
 
-@patch('client.alpha_vantage.AlphaVantageApiClient.get_data')
-@patch('data_ingestion.fetch_alpha_vantage.AlphaVantageApiClient')
-@patch('data_ingestion.fetch_alpha_vantage.AlphaVantanageDataService')
-@patch('data_ingestion.fetch_alpha_vantage.AlphaVantageApiConstructor')
+
+@patch("client.alpha_vantage.AlphaVantageApiClient.get_data")
+@patch("data_ingestion.fetch_alpha_vantage.AlphaVantageApiClient")
+@patch("data_ingestion.fetch_alpha_vantage.AlphaVantanageDataService")
+@patch("data_ingestion.fetch_alpha_vantage.AlphaVantageApiConstructor")
 def test_fetch_av_timeseries_daily_data(
-    mock_constructor: Any,
-    mock_service: Any,
-    mock_client: Any,
-    mock_get_data: Any
+    mock_constructor: Any, mock_service: Any, mock_client: Any, mock_get_data: Any
 ) -> None:
     # Mock response data
     expected_data = {
@@ -44,9 +46,15 @@ def test_fetch_av_timeseries_daily_data(
     mock_response.text = json.dumps(expected_data)
     mock_get_data.return_value = AlphaVantageResponse.from_dict(expected_data)
 
-    mock_constructor.return_value.construct_time_series_daily_endpoint = MagicMock(return_value='mock_endpoint')
-    mock_service.return_value.fetch_data_with_endpoint.return_value = AlphaVantageResponse.from_dict(expected_data)
-    mock_service.return_value.get_json_response.return_value = json.dumps(expected_data, indent=4)
+    mock_constructor.return_value.construct_time_series_daily_endpoint = MagicMock(
+        return_value="mock_endpoint"
+    )
+    mock_service.return_value.fetch_data_with_endpoint.return_value = (
+        AlphaVantageResponse.from_dict(expected_data)
+    )
+    mock_service.return_value.get_json_response.return_value = json.dumps(
+        expected_data, indent=4
+    )
 
     result = fetch_av_timeseries_daily_data()
 
@@ -56,7 +64,7 @@ def test_fetch_av_timeseries_daily_data(
             symbol="IBM",
             last_refreshed="2024-08-02",
             output_size="Compact",
-            time_zone="US/Eastern"
+            time_zone="US/Eastern",
         ),
         time_series_daily={
             "2024-08-02": TimeSeriesDaily(
@@ -64,9 +72,9 @@ def test_fetch_av_timeseries_daily_data(
                 high="189.2600",
                 low="185.7000",
                 close="189.1200",
-                volume="4548824"
+                volume="4548824",
             )
-        }
+        },
     )
 
     assert json.loads(result) == json.loads(expected_response.to_json(indent=4))

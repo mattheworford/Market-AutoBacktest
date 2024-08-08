@@ -27,6 +27,3 @@ def fetch_av_timeseries_daily_data() -> str:
         output=OUTPUT,
     )
     return data_service.get_json_response(data)
-
-
-
