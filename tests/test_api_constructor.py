@@ -10,5 +10,7 @@ def test_construct_time_series_daily_endpoint() -> None:
         symbol="IBM", api_key="fake_api_key"
     )
 
-    expected_endpoint = "?function=TIME_SERIES_DAILY&symbol=IBM&apikey=fake_api_key"
+    expected_endpoint = (
+        "?function=TIME_SERIES_DAILY&symbol=IBM&apikey=fake_api_key&outputsize=compact"
+    )
     assert endpoint == expected_endpoint
