@@ -1,20 +1,16 @@
-import requests
-import pandas as pd
-from io import StringIO
+import nasdaqdatalink  # type: ignore
 import os
 from dotenv import load_dotenv
+import pandas as pd
+
+load_dotenv()
 
 
 def fetch_quandl_data(
-    symbol: str, start_date: str = "2020-01-01", end_date: str = "2024-01-01"
+    symbol: str, start_date: str = "2018-01-01", end_date: str = "2018-12-31"
 ) -> pd.DataFrame:
-    load_dotenv()
-    QUANDL_API_KEY = os.getenv("QUANDL_API_KEY")
-    url = f"https://www.quandl.com/api/v3/datasets/WIKI/{symbol}.csv"
-    params = {"start_date": start_date, "end_date": end_date, "api_key": QUANDL_API_KEY}
-    response = requests.get(url, params=params)
-    response.raise_for_status()
-
-    csv_data = StringIO(response.text)
-    data = pd.read_csv(csv_data)
+    nasdaqdatalink.ApiConfig.api_key = os.getenv("QUANDL_API_KEY")
+    data: pd.DataFrame = nasdaqdatalink.get(
+        f"WIKI/{symbol}", start_date=start_date, end_date=end_date
+    )
     return data
