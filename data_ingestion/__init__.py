@@ -2,11 +2,11 @@
 data_ingestion package
 
 This package provides tools for fetching and processing financial data from various sources like
-Quandl, Polygon.io, and Tiingo.
+Quandl, Polygon.io, Tiingo, and Alpha Vantage.
 """
 
 __version__ = "1.0.0"
-__author__ = "Matthew Orford"
+__author__ = "Matthew Orford & Willem Seethaler"
 
 import logging
 
