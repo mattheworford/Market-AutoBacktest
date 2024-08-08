@@ -4,7 +4,7 @@ from dataclasses_json import DataClassJsonMixin
 
 
 @dataclass
-class Result(DataClassJsonMixin):
+class PreviousCloseResult(DataClassJsonMixin):
     T: str
     c: float
     h: float
@@ -20,7 +20,7 @@ class PolygonDailyApiResponse(DataClassJsonMixin):
     adjusted: bool
     queryCount: int
     request_id: str
-    results: List[Result]
+    results: List[PreviousCloseResult]
     resultsCount: int
     status: str
     ticker: str

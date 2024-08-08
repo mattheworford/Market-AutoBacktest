@@ -4,7 +4,7 @@ from dataclasses_json import DataClassJsonMixin
 
 
 @dataclass
-class Result(DataClassJsonMixin):
+class AggResult(DataClassJsonMixin):
     c: float
     h: float
     l: float
@@ -20,7 +20,7 @@ class PolygonAggregatesResponse(DataClassJsonMixin):
     adjusted: bool
     queryCount: int
     request_id: str
-    results: List[Result]
+    results: List[AggResult]
     resultsCount: int
     status: str
     ticker: str
