@@ -45,6 +45,8 @@ jobs:
     - name: Set environment variables
       env:
         QUANDL_API_KEY: "${{ secrets.QUANDL_API_KEY }}"
+        API_KEY: "${{secrets.AV_API_KEY}}"
+        POLY_API_KEY: "${{secrets.POLY_API_KEY}}"
       run: echo "Environment variables set"
 
     - name: Test with pytest

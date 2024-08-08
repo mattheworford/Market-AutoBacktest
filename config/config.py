@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Alpha Vantage
-API_KEY = os.getenv("API_KEY")
+AV_API_KEY = os.getenv("AV_API_KEY")
 BASE_URL = "https://www.alphavantage.co/query"
 SYMBOL = "SPY"
 OUTPUT = "compact"
