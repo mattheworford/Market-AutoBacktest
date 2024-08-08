@@ -162,3 +162,7 @@ cython_debug/
 #.idea/
 
 config/config.py
+
+# Ignore .txt local notes
+/postgreSQL-Notes.txt
+
