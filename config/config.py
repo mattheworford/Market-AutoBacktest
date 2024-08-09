@@ -21,5 +21,5 @@ POLY_TO = "2024-08-04"
 
 
 # Quandl
-QUANDL_API_KEY = "STR"
+QUANDL_API_KEY = os.getenv("QUANDL_API_KEY")
 
