@@ -16,9 +16,9 @@ logger = logging.getLogger(__name__)
 
 # Expose key functions at the package level
 from .fetch_quandl import fetch_quandl_data
+from .fetch_tiingo import fetch_tiingo_data
 
 # from .fetch_polygon import fetch_polygon_data
-# from .fetch_tiingo import fetch_tiingo_data
 
 # Optional: Initialize package-wide settings or constants
 DEFAULT_START_DATE = "2020-01-01"
