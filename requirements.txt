@@ -29,6 +29,7 @@ python-dotenv==1.0.1
 pytz==2024.1
 requests==2.32.3
 six==1.16.0
+SQLAlchemy==2.0.32
 types-colorama==0.4.15.20240311
 types-docutils==0.21.0.20240724
 types-psycopg2==2.9.21.20240417
