@@ -4,6 +4,8 @@ from io import StringIO
 import os
 from dotenv import load_dotenv
 
+from config.config import COLUMN_MAPPINGS, MARKET_DATA_COLUMNS
+
 load_dotenv()
 
 
@@ -22,5 +24,12 @@ def fetch_tiingo_data(
 
     csv_data = StringIO(response.text)
     data = pd.read_json(csv_data)
+    return standardize_data(data)
 
-    return data
+
+def standardize_data(df: pd.DataFrame) -> pd.DataFrame:
+    df.rename(columns=COLUMN_MAPPINGS["tiingo"], inplace=True)
+    df.set_index("date", inplace=True)
+    df.index = pd.to_datetime(df.index)
+
+    return df[MARKET_DATA_COLUMNS]
