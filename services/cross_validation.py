@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Dict
 from models import QuandlData, TiingoData, AlphaVantageData
 
 
@@ -55,7 +55,7 @@ class CrossValidator:
                 )
         return mismatches
 
-    def compare_all(self) -> dict:
+    def compare_all(self) -> Dict[str, List[str]]:
         return {
             "financial_metric_mismatches": self.compare_financial_metrics(),
         }
