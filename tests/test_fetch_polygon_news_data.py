@@ -58,8 +58,6 @@ def test_fetch_polygon_ticker_news_data(
     df = fetch_polygon_ticker_news_data(symbol="SPY", limit=10)
 
     assert not df.empty
-
-    # Check the content of the DataFrame
     assert df.iloc[0]["publisher_name"] == "Zacks Investment Research"
     assert df.iloc[0]["title"] == "Market Bottom or More Downside & Volatility Ahead?"
     assert (
