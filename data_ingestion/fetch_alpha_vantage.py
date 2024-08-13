@@ -1,29 +1,34 @@
+import os
+import pandas as pd
+import requests
 from dotenv import load_dotenv
-from typing import Optional
+from config.config import COLUMN_MAPPINGS
 
-# Load environment variables from a .env file
+
 load_dotenv()
 
-from config.config import AV_API_KEY, BASE_URL, SYMBOL, OUTPUT
-from client.alpha_vantage import AlphaVantageApiClient
-from services.alpha_vantage_services import AlphaVantanageDataService
-from utils.api_constructor_utils import AlphaVantageApiConstructor
-from models.alpha_vantage_models.alpha_vantage_daily import AlphaVantageResponse
+
+def fetch_alpha_vantage_data(symbol: str = "SPY", output: str = "full") -> pd.DataFrame:
+    AV_API_KEY = os.getenv("AV_API_KEY")
+    url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={AV_API_KEY}&outputsize={output}"
+    response = requests.get(url)
+    response.raise_for_status()
+
+    data = response.json()
+    time_series = data.get("Time Series (Daily)", {})
+
+    df = pd.DataFrame.from_dict(time_series, orient="index")
+
+    return standardize_data(df)
 
 
-def fetch_av_timeseries_daily_data() -> str:
-    assert AV_API_KEY is not None  # Type assertion for mypy
+def standardize_data(df: pd.DataFrame) -> pd.DataFrame:
+    df.reset_index(inplace=True)
+    df.rename(columns={"index": "date"}, inplace=True)
+    df.rename(columns=COLUMN_MAPPINGS["alpha_vantage"], inplace=True)
+    df["date"] = pd.to_datetime(df["date"])
+    df.set_index("date", inplace=True)
+    return df[COLUMN_MAPPINGS["alpha_vantage"].values()]
 
-    client = AlphaVantageApiClient(key=AV_API_KEY, base_url=BASE_URL)
-    data_service = AlphaVantanageDataService(api_client=client)
-    api_constructor = AlphaVantageApiConstructor(base_url=BASE_URL)
 
-    endpoint_constructor = api_constructor.construct_time_series_daily_endpoint
-    data = data_service.fetch_data_with_endpoint(
-        endpoint_constructor,
-        AlphaVantageResponse,
-        symbol=SYMBOL,
-        api_key=AV_API_KEY,
-        output=OUTPUT,
-    )
-    return data_service.get_json_response(data)
+print(fetch_alpha_vantage_data())
