@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 # from .fetch_tiingo import fetch_tiingo_data
 # from .fetch_alpha_vantage import fetch_alpha_vantage_data
 
+
 # Expose key functions at the package level
 # Use lazy import pattern to avoid circular imports
 def fetch_polygon_ticker_news_data(*args: Any, **kwargs: Any) -> Optional[pd.DataFrame]:
