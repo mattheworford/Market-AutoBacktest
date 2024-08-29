@@ -8,13 +8,17 @@ import logging
 
 @pytest.fixture
 def mock_env_vars() -> Generator[None, None, None]:
-    with patch.dict(os.environ, {
-        "DB_USER": "test_user",
-        "DB_PASS": "test_pass",
-        "DB_NAME": "test_db",
-        "INSTANCE_CONNECTION_NAME": "testid:us-central1:testdb"
-    }):
+    with patch.dict(
+        os.environ,
+        {
+            "DB_USER": "test_user",
+            "DB_PASS": "test_pass",
+            "DB_NAME": "test_db",
+            "INSTANCE_CONNECTION_NAME": "testid:us-central1:testdb",
+        },
+    ):
         yield
+
 
 from test_db_connection import test_connection
 
