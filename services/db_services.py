@@ -12,7 +12,9 @@ load_dotenv()
 class DBService:
     def __init__(
         self,
-        db_url: str = f"postgresql://{os.getenv("DB_USER")}:{os.getenv("DB_PASS")}@localhost:5433/{os.getenv("DB_NAME")}",
+        db_url: str = (
+            f"postgresql://{os.getenv("DB_USER")}:{os.getenv("DB_PASS")}@localhost:5433/{os.getenv("DB_NAME")}",
+        ),
     ):
         self.engine = create_engine(db_url)
 
