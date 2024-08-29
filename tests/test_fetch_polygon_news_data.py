@@ -52,11 +52,30 @@ def mock_env_vars() -> Generator[None, None, None]:
 def test_fetch_polygon_ticker_news_data(
     mock_get: MagicMock, mock_polygon_response: Dict[str, Any], mock_env_vars: None
 ) -> None:
-    mock_get.return_value.json.return_value = mock_polygon_response
-    mock_get.return_value.raise_for_status = MagicMock()
+    print("Debug: Test function started")
+    print(f"Debug: mock_get is {mock_get}")
+    print(f"Debug: mock_polygon_response is {mock_polygon_response}")
 
+    # Set up the mock response
+    mock_response = MagicMock()
+    mock_response.json.return_value = mock_polygon_response
+    mock_get.return_value = mock_response
+
+    # Call the function
     df = fetch_polygon_ticker_news_data(symbol="SPY", limit=10)
 
+    # Assert that the mock was called with the correct arguments
+    mock_get.assert_called_once()
+    args, kwargs = mock_get.call_args
+
+    # Check if the URL is correct and contains the expected parameters
+    assert "https://api.polygon.io/v2/reference/news" in args[0]
+    assert "ticker=SPY" in args[0]
+    assert "limit=10" in args[0]
+    assert "apiKey=" in args[0]
+
+    # Assert the returned dataframe
+    assert isinstance(df, pd.DataFrame)
     assert not df.empty
     assert df.iloc[0]["publisher_name"] == "Zacks Investment Research"
     assert df.iloc[0]["title"] == "Market Bottom or More Downside & Volatility Ahead?"
