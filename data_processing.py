@@ -8,6 +8,7 @@ from data_ingestion import (
     # fetch_alpha_vantage_data,
     fetch_polygon_ticker_news_data,
 )
+from database import db
 
 
 def combine_data(dataframes: list[pd.DataFrame]) -> pd.DataFrame:
@@ -22,4 +23,9 @@ def save_to_csv(data: pd.DataFrame, filepath: str) -> None:
 def save_to_database(data: pd.DataFrame, table_name: str, db_url: str) -> None:
     engine = create_engine(db_url)
     data.to_sql(table_name, engine, if_exists="replace", index=True)
+    print(f"Data saved to table {table_name} in the database.")
+
+
+def save_to_cloud_sql_database(data: pd.DataFrame, table_name: str) -> None:
+    data.to_sql(table_name, db, if_exists="replace", index=True)
     print(f"Data saved to table {table_name} in the database.")
