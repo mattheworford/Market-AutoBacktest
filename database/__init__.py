@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 import sqlalchemy.engine.base
+from typing import Any
 
 load_dotenv()
 
@@ -20,8 +21,8 @@ def init_connection_engine() -> sqlalchemy.engine.base.Engine:
 
     engine = create_engine(
         f"postgresql://{db_user}:{db_pass}@localhost:5433/{db_name}",
-        echo=True,  # This will log all SQL statements
-        isolation_level="AUTOCOMMIT",  # This will ensure transactions are committed immediately
+        echo=True,  # log all SQL statements
+        isolation_level="AUTOCOMMIT",  # commit transactions immediately
     )
     return engine
 

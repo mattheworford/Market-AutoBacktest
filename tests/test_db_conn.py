@@ -1,9 +1,13 @@
 import pytest
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, MagicMock
 from sqlalchemy.exc import SQLAlchemyError
 import os
 from typing import Generator
 import logging
+from sqlalchemy.engine.base import Engine, Connection
+
+# Import test_connection at the top level
+from db_connection import test_connection
 
 
 @pytest.fixture
@@ -20,15 +24,10 @@ def mock_env_vars() -> Generator[None, None, None]:
         yield
 
 
-from test_db_connection import test_connection
-
-
 @pytest.fixture
 def mock_db_connection() -> Generator[Mock, None, None]:
-    with patch("test_db_connection.db.connect") as mock_connect:
-        mock_conn = Mock()
-        mock_connect.return_value.__enter__.return_value = mock_conn
-        yield mock_conn
+    mock_conn = Mock(spec=Connection)
+    yield mock_conn
 
 
 @pytest.fixture(autouse=True)
@@ -36,9 +35,14 @@ def setup_logging(caplog: pytest.LogCaptureFixture) -> None:
     caplog.set_level(logging.INFO)
 
 
+@patch("db_connection.db.connect")
 def test_successful_connection(
-    mock_db_connection: Mock, caplog: pytest.LogCaptureFixture, mock_env_vars: None
+    mock_connect: Mock,
+    mock_db_connection: Mock,
+    caplog: pytest.LogCaptureFixture,
+    mock_env_vars: None,
 ) -> None:
+    mock_connect.return_value.__enter__.return_value = mock_db_connection
     # Mock successful database operations
     mock_db_connection.execute.side_effect = [
         Mock(scalar=lambda: "test_db"),
@@ -47,7 +51,7 @@ def test_successful_connection(
         None,
         Mock(fetchall=lambda: [("row1",), ("row2",)]),
         Mock(fetchall=lambda: [("table1",), ("table2",)]),
-        Mock(fetchall=lambda: [("table1",), ("table2",)]),
+        None,  # For the DELETE operation
         Mock(fetchall=lambda: [("row1",), ("row2",)]),
     ]
 
@@ -61,22 +65,25 @@ def test_successful_connection(
     assert "Data 'wcs' inserted into second_table" in caplog.text
     assert "Query result from second_table: [('row1',), ('row2',)]" in caplog.text
     assert "All tables in database: [('table1',), ('table2',)]" in caplog.text
+    assert "Data 'wcs' deleted from second_table" in caplog.text
     assert (
-        "All tables in database after commit: [('table1',), ('table2',)]" in caplog.text
-    )
-    assert (
-        "Query result from second_table after commit: [('row1',), ('row2',)]"
+        "Query result from second_table after cleanup: [('row1',), ('row2',)]"
         in caplog.text
     )
 
     # Assert database operations were called
     assert mock_db_connection.execute.call_count == 8
-    assert mock_db_connection.commit.call_count == 1
+    assert mock_db_connection.commit.call_count == 2
 
 
+@patch("db_connection.db.connect")
 def test_connection_failure(
-    mock_db_connection: Mock, caplog: pytest.LogCaptureFixture, mock_env_vars: None
+    mock_connect: Mock,
+    mock_db_connection: Mock,
+    caplog: pytest.LogCaptureFixture,
+    mock_env_vars: None,
 ) -> None:
+    mock_connect.return_value.__enter__.return_value = mock_db_connection
     # Mock SQLAlchemyError
     mock_db_connection.execute.side_effect = SQLAlchemyError("Connection failed")
 
