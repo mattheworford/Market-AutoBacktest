@@ -1,9 +1,20 @@
 import pytest
 from unittest.mock import Mock, patch
 from sqlalchemy.exc import SQLAlchemyError
-from test_db_connection import test_connection
-from typing import Generator, Any
+import os
+from typing import Generator
 import logging
+
+
+@pytest.fixture(autouse=True)
+def setup_test_env(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("INSTANCE_CONNECTION_NAME", "=testid:us-central1:testdb")
+    monkeypatch.setenv("DB_USER", "test_user")
+    monkeypatch.setenv("DB_PASS", "test_pass")
+    monkeypatch.setenv("DB_NAME", "test_db")
+
+
+from test_db_connection import test_connection
 
 
 @pytest.fixture
