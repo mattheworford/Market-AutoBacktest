@@ -43,10 +43,10 @@ def fetch_tiingo_data(*args: Any, **kwargs: Any) -> pd.DataFrame:
     return _fetch(*args, **kwargs)
 
 
-def fetch_alpha_vantage_data(*args: Any, **kwargs: Any) -> pd.DataFrame:
-    from .fetch_alpha_vantage import fetch_alpha_vantage_data as _fetch
+# def fetch_alpha_vantage_data(*args: Any, **kwargs: Any) -> pd.DataFrame:
+#     from .fetch_alpha_vantage import fetch_alpha_vantage_data as _fetch
 
-    return _fetch(*args, **kwargs)
+#     return _fetch(*args, **kwargs)
 
 
 # Optional: Initialize package-wide settings or constants
@@ -57,7 +57,7 @@ logger.info("data_ingestion package initialized")
 
 __all__ = [
     "fetch_quandl_data",
-    "fetch_alpha_vantage_data",
+    # "fetch_alpha_vantage_data",
     "fetch_polygon_ticker_news_data",
     "fetch_tiingo_data",
 ]

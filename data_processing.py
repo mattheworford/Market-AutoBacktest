@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 from data_ingestion import (
     fetch_quandl_data,
     fetch_tiingo_data,
-    fetch_alpha_vantage_data,
+    # fetch_alpha_vantage_data,
     fetch_polygon_ticker_news_data,
 )
 
