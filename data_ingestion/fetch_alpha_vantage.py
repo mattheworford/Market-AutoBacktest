@@ -11,8 +11,8 @@ load_dotenv()
 def fetch_alpha_vantage_data(
     symbol: str = "SPY", output: str = "compact"
 ) -> pd.DataFrame:
-    # AV_API_KEY = os.getenv("AV_API_KEY")
-    url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={os.getenv("AV_API_KEY")}&outputsize={output}"
+    AV_API_KEY = os.getenv("AV_API_KEY")
+    url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={AV_API_KEY}&outputsize={output}"
     response = requests.get(url)
     response.raise_for_status()
 
