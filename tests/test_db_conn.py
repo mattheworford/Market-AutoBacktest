@@ -6,13 +6,15 @@ from typing import Generator
 import logging
 
 
-@pytest.fixture(autouse=True)
-def setup_test_env(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("INSTANCE_CONNECTION_NAME", "=testid:us-central1:testdb")
-    monkeypatch.setenv("DB_USER", "test_user")
-    monkeypatch.setenv("DB_PASS", "test_pass")
-    monkeypatch.setenv("DB_NAME", "test_db")
-
+@pytest.fixture
+def mock_env_vars() -> Generator[None, None, None]:
+    with patch.dict(os.environ, {
+        "DB_USER": "test_user",
+        "DB_PASS": "test_pass",
+        "DB_NAME": "test_db",
+        "INSTANCE_CONNECTION_NAME": "testid:us-central1:testdb"
+    }):
+        yield
 
 from test_db_connection import test_connection
 
@@ -31,7 +33,7 @@ def setup_logging(caplog: pytest.LogCaptureFixture) -> None:
 
 
 def test_successful_connection(
-    mock_db_connection: Mock, caplog: pytest.LogCaptureFixture
+    mock_db_connection: Mock, caplog: pytest.LogCaptureFixture, mock_env_vars: None
 ) -> None:
     # Mock successful database operations
     mock_db_connection.execute.side_effect = [
@@ -69,7 +71,7 @@ def test_successful_connection(
 
 
 def test_connection_failure(
-    mock_db_connection: Mock, caplog: pytest.LogCaptureFixture
+    mock_db_connection: Mock, caplog: pytest.LogCaptureFixture, mock_env_vars: None
 ) -> None:
     # Mock SQLAlchemyError
     mock_db_connection.execute.side_effect = SQLAlchemyError("Connection failed")
