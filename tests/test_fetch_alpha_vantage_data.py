@@ -1,77 +1,79 @@
-from typing import Generator, Dict, Any
+from typing import Generator
 import pytest
 import os
 from unittest.mock import patch, MagicMock
 import pandas as pd
-from data_ingestion.fetch_polygon_news import (
-    fetch_polygon_ticker_news_data,
+from data_ingestion.fetch_alpha_vantage import (
+    fetch_alpha_vantage_data,
     standardize_data,
 )
 
 
 @pytest.fixture
-def mock_polygon_response() -> Dict[str, Any]:
-    return {
-        "results": [
-            {
-                "id": "6da518d6e297c16898c499c58c59b13445cb0e813d755e8a4d97df343e252e70",
-                "publisher": {
-                    "name": "Zacks Investment Research",
-                    "homepage_url": "https://www.zacks.com/",
-                    "logo_url": "https://s3.polygon.io/public/assets/news/logos/zacks.png",
-                    "favicon_url": "https://s3.polygon.io/public/assets/news/favicons/zacks.ico",
-                },
-                "title": "Market Bottom or More Downside & Volatility Ahead?",
-                "author": "N/A",
-                "published_utc": "2024-08-07T17:53:00Z",
-                "article_url": "https://www.zacks.com/commentary/2318329/market-bottom-or-more-downside-volatility-ahead",
-                "tickers": ["SPY", "QQQ"],
-                "image_url": "https://staticx-tuner.zacks.com/images/articles/market-bottom.jpg",
-                "description": "U.S. stocks have experienced a correction, with...",
-                "keywords": ["S&P 500", "VIX", "Nasdaq 100", "Zacks Rank"],
-                "insights": [
-                    {
-                        "ticker": "SPY",
-                        "sentiment": "negative",
-                        "sentiment_reasoning": "The S&P 500 Index ETF (SPY) is expected to face...",
-                    },
-                ],
-            },
-        ],
-        "status": "OK",
-    }
-
-
-@pytest.fixture
 def mock_env_vars() -> Generator[None, None, None]:
-    with patch.dict(os.environ, {"POLY_API_KEY": "test_key"}):
+    with patch.dict(os.environ, {"AV_API_KEY": "test_key"}):
         yield
 
 
-@patch("data_ingestion.fetch_polygon_news.requests.get")
-def test_fetch_polygon_ticker_news_data(
-    mock_get: MagicMock, mock_polygon_response: Dict[str, Any], mock_env_vars: None
+@pytest.fixture
+def mock_alpha_vantage_response() -> dict[str, dict[str, dict[str, str]]]:
+    return {
+        "Time Series (Daily)": {
+            "2024-08-12": {
+                "1. open": "534.2100",
+                "2. high": "535.7300",
+                "3. low": "530.9500",
+                "4. close": "533.2700",
+                "5. volume": "42542069",
+            },
+            "2024-08-09": {
+                "1. open": "529.8100",
+                "2. high": "534.5100",
+                "3. low": "528.5600",
+                "4. close": "532.9900",
+                "5. volume": "45619558",
+            },
+        }
+    }
+
+
+@patch("data_ingestion.fetch_alpha_vantage.requests.get")
+def test_fetch_alpha_vantage_data(
+    mock_get: MagicMock,
+    mock_alpha_vantage_response: dict[str, dict[str, dict[str, str]]],
+    mock_env_vars: None,
 ) -> None:
-    mock_get.return_value.json.return_value = mock_polygon_response
+    mock_get.return_value.json.return_value = mock_alpha_vantage_response
     mock_get.return_value.raise_for_status = MagicMock()
-    df = fetch_polygon_ticker_news_data(symbol="SPY", limit=10)
 
-    assert not df.empty
-    assert df.iloc[0]["publisher_name"] == "Zacks Investment Research"
-    assert df.iloc[0]["title"] == "Market Bottom or More Downside & Volatility Ahead?"
-    assert (
-        "SPY: negative (The S&P 500 Index ETF (SPY) is expected to face...)"
-        in df.iloc[0]["insights"]
-    )
+    # Fetch the data
+    df = fetch_alpha_vantage_data(symbol="SPY", output="full")
+
+    # Standardize the data (if not done in the fetch function)
+    standardized_df = standardize_data(df)
+
+    # Now assert using the standardized DataFrame
+    assert not standardized_df.empty
+    assert standardized_df.index[0] == pd.to_datetime("2024-08-12")
+    assert standardized_df.iloc[0]["open"] == "534.2100"
+    assert standardized_df.iloc[0]["high"] == "535.7300"
+    assert standardized_df.iloc[0]["low"] == "530.9500"
+    assert standardized_df.iloc[0]["close"] == "533.2700"
+    assert standardized_df.iloc[0]["volume"] == "42542069"
 
 
-def test_standardize_data(mock_polygon_response: Dict[str, Any]) -> None:
-    df = standardize_data(mock_polygon_response)
+def test_standardize_data(
+    mock_alpha_vantage_response: dict[str, dict[str, dict[str, str]]]
+) -> None:
+    time_series = mock_alpha_vantage_response.get("Time Series (Daily)", {})
+    df = pd.DataFrame.from_dict(time_series, orient="index")
 
-    assert not df.empty
-    assert df.iloc[0]["publisher_name"] == "Zacks Investment Research"
-    assert df.iloc[0]["title"] == "Market Bottom or More Downside & Volatility Ahead?"
-    assert (
-        "SPY: negative (The S&P 500 Index ETF (SPY) is expected to face...)"
-        in df.iloc[0]["insights"]
-    )
+    standardized_df = standardize_data(df)
+
+    assert not standardized_df.empty
+    assert standardized_df.index[0] == pd.to_datetime("2024-08-12")
+    assert standardized_df.iloc[0]["open"] == "534.2100"
+    assert standardized_df.iloc[0]["high"] == "535.7300"
+    assert standardized_df.iloc[0]["low"] == "530.9500"
+    assert standardized_df.iloc[0]["close"] == "533.2700"
+    assert standardized_df.iloc[0]["volume"] == "42542069"

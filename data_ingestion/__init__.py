@@ -15,10 +15,10 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Expose key functions at the package level
-from .fetch_alpha_vantage import fetch_alpha_vantage_data
 from .fetch_polygon_news import fetch_polygon_ticker_news_data
 from .fetch_quandl import fetch_quandl_data
 from .fetch_tiingo import fetch_tiingo_data
+from .fetch_alpha_vantage import fetch_alpha_vantage_data
 
 
 # Optional: Initialize package-wide settings or constants
